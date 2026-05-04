@@ -1,35 +1,64 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Scalar.AspNetCore;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+// Bootstrap Logger
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(opts =>
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Configure Logger to Serilog
+    builder.Host.UseSerilog((context, services, configuration) =>
     {
-        opts
-            .EnableDarkMode()
-            .WithTheme(ScalarTheme.BluePlanet)
-            .ShowOperationId();
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext();
     });
+
+    // Add services to the container.
+
+    builder.Services.AddControllers();
+    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    builder.Services.AddOpenApi();
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.MapScalarApiReference(opts =>
+        {
+            opts
+                .EnableDarkMode()
+                .WithTheme(ScalarTheme.BluePlanet)
+                .ShowOperationId();
+        });
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception e)
+{
+    Log.Fatal(e, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
