@@ -41,6 +41,8 @@ try
     builder.Services.AddRepositories(typeof(Program));
     // AutoMapper
     builder.Services.AddMappingProfiles(typeof(Program));
+    // Add Problem Details
+    builder.Services.AddProblemDetails();
     
     // Register startup service
     builder.Services.AddHostedService<StartupTask>();
@@ -58,6 +60,15 @@ try
                 .WithTheme(ScalarTheme.BluePlanet)
                 .ShowOperationId();
         });
+        
+        // Unhandled Exception behavior
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        // Unhandled Exception behavior in Production
+        app.UseExceptionHandler();
+        app.UseHsts();
     }
 
     app.UseHttpsRedirection();
