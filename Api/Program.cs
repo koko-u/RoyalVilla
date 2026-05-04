@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,9 +34,13 @@ try
         opts.AddOperationTransformer(OperationTransformers.WithoutSummaryAndDescription);
         opts.AddDocumentTransformer(DocumentTransformers.TagDescriptions);
     });
-    
+
     // Add PostgreSQL Database Source
     builder.Services.AddPgDatabaseSource(builder.Configuration);
+    // Add Repositories
+    builder.Services.AddRepositories(typeof(Program));
+    // AutoMapper
+    builder.Services.AddMappingProfiles(typeof(Program));
     
     // Register startup service
     builder.Services.AddHostedService<StartupTask>();

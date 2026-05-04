@@ -1,24 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-    <PackageReference Include="Npgsql" />
-    <PackageReference Include="Npgsql.DependencyInjection" />
-    <PackageReference Include="Scalar.AspNetCore" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.AspNetCore" />
-    <PackageReference Include="Serilog.Enrichers.ShortTypeName" />
-    <PackageReference Include="Serilog.Settings.Configuration" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="Serilog.Sinks.File" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="Dapper"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+        <PackageReference Include="Npgsql"/>
+        <PackageReference Include="Npgsql.DependencyInjection"/>
+        <PackageReference Include="Scalar.AspNetCore"/>
+        <PackageReference Include="Serilog"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Enrichers.ShortTypeName"/>
+        <PackageReference Include="Serilog.Settings.Configuration"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+        <PackageReference Include="Serilog.Sinks.File"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Sql/**/*.sql" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
 
 </Project>
