@@ -23,6 +23,7 @@ public class VillasController(VillasRepository repo, IMapper mapper) : Controlle
     /// </summary>
     /// <returns></returns>
     [HttpGet(Name = "GetVillas")]
+    [ProducesResponseType<IEnumerable<VillaData>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<VillaData>>> GetVillas()
     {
         var rows = await repo.GetAllVillasAsync();
@@ -36,6 +37,8 @@ public class VillasController(VillasRepository repo, IMapper mapper) : Controlle
     /// <param name="id">Villa ID</param>
     /// <returns></returns>
     [HttpGet("{id:int:min(1)}", Name = "GetVillaById")]
+    [ProducesResponseType<VillaData>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<VillaData>> GetVillaById(int id)
     {
         var row = await repo.GetVillaByIdAsync(id);
