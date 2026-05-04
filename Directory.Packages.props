@@ -17,6 +17,7 @@
         <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0"/>
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0"/>
         <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1"/>
+        <PackageVersion Include="Serilog.Enrichers.ShortTypeName" Version="1.1.0"/>
         
         <PackageVersion Include="Npgsql" Version="10.0.2"/>
     </ItemGroup>
