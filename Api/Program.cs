@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RoyalVilla.Api.Extensions;
+using RoyalVilla.Api.OpenApiConfiguration;
 using RoyalVilla.Api.Services.Startup;
 using Scalar.AspNetCore;
 using Serilog;
@@ -31,13 +32,8 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi(opts =>
     {
-        opts.AddOperationTransformer( (operation, _, _) =>
-        {
-            operation.Summary = null;
-            operation.Description = null;
-            
-            return Task.CompletedTask;
-        });
+        opts.AddOperationTransformer(OperationTransformers.WithoutSummaryAndDescription);
+        opts.AddDocumentTransformer(DocumentTransformers.TagDescriptions);
     });
     
     // Add PostgreSQL Database Source

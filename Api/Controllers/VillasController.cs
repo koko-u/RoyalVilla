@@ -6,6 +6,7 @@ namespace RoyalVilla.Api.Controllers;
 
 [ApiController]
 [Route("api/villas")]
+[Tags("Villas")]
 public class VillasController : ControllerBase
 {
     [HttpGet(Name = "GetVillas")]
