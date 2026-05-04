@@ -11,6 +11,7 @@
     <PackageReference Include="Dapper" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Npgsql" />
+    <PackageReference Include="Npgsql.DependencyInjection" />
     <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.AspNetCore" />

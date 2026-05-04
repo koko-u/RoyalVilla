@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RoyalVilla.Api.Extensions;
+using RoyalVilla.Api.Services.Startup;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -24,8 +26,7 @@ try
             .Enrich.FromLogContext();
     });
 
-    // Add services to the container.
-
+    // Add Controllers and OpenAPI configuration
     builder.Services.AddControllers();
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi(opts =>
@@ -38,6 +39,12 @@ try
             return Task.CompletedTask;
         });
     });
+    
+    // Add PostgreSQL Database Source
+    builder.Services.AddPgDatabaseSource(builder.Configuration);
+    
+    // Register startup service
+    builder.Services.AddHostedService<StartupTask>();
 
     var app = builder.Build();
 
