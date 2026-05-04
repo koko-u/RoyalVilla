@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,7 +28,16 @@ try
 
     builder.Services.AddControllers();
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-    builder.Services.AddOpenApi();
+    builder.Services.AddOpenApi(opts =>
+    {
+        opts.AddOperationTransformer( (operation, _, _) =>
+        {
+            operation.Summary = null;
+            operation.Description = null;
+            
+            return Task.CompletedTask;
+        });
+    });
 
     var app = builder.Build();
 
