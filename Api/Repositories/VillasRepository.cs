@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using RoyalVilla.Api.Annotations;
 
 namespace RoyalVilla.Api.Repositories;
 
+/// <summary>
+/// Villas Table Repository
+/// </summary>
+/// <param name="conn"></param>
+/// <param name="logger"></param>
+[AutoRegisterService]
 public sealed class VillasRepository(NpgsqlConnection conn, ILogger<VillasRepository> logger) : IRepository
 {
     /// <summary>
@@ -24,6 +31,12 @@ public sealed class VillasRepository(NpgsqlConnection conn, ILogger<VillasReposi
         return rows;
     }
 
+    /// <summary>
+    /// Get villa information by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<VillaRow?> GetVillaByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var sql = await File.ReadAllTextAsync("Sql/Villas/select_one.sql", cancellationToken);

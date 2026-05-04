@@ -8,11 +8,20 @@ using RoyalVilla.Api.Repositories;
 
 namespace RoyalVilla.Api.Controllers;
 
+/// <summary>
+/// Villas controller for managing villa data
+/// </summary>
+/// <param name="repo"></param>
+/// <param name="mapper"></param>
 [ApiController]
 [Route("api/villas")]
 [Tags("Villas")]
 public class VillasController(VillasRepository repo, IMapper mapper) : ControllerBase
 {
+    /// <summary>
+    /// Get All Villas Data
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(Name = "GetVillas")]
     public async Task<ActionResult<IEnumerable<VillaData>>> GetVillas()
     {
@@ -21,6 +30,11 @@ public class VillasController(VillasRepository repo, IMapper mapper) : Controlle
         return Ok(villas);
     }
 
+    /// <summary>
+    /// Get Villa by ID
+    /// </summary>
+    /// <param name="id">Villa ID</param>
+    /// <returns></returns>
     [HttpGet("{id:int:min(1)}", Name = "GetVillaById")]
     public async Task<ActionResult<VillaData>> GetVillaById(int id)
     {

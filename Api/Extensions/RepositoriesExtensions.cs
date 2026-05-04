@@ -10,6 +10,12 @@ namespace RoyalVilla.Api.Extensions;
 /// </summary>
 public static class RepositoriesExtensions
 {
+    /// <summary>
+    /// Add All Repository services
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services, Type type)
     {
         var repoTypes =

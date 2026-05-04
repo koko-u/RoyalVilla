@@ -12,6 +12,10 @@ namespace RoyalVilla.Api.Services.Startup;
 /// </summary>
 public sealed class StartupTask(NpgsqlConnection conn, ILogger<StartupTask> logger) : IHostedService
 {
+    /// <summary>
+    /// Output Log when application startup.
+    /// </summary>
+    /// <param name="cancellationToken"></param>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await conn.OpenAsync(cancellationToken);
@@ -19,5 +23,10 @@ public sealed class StartupTask(NpgsqlConnection conn, ILogger<StartupTask> logg
         logger.LogInformation($"Application started with PostgreSQL version: {version}");
     }
 
+    /// <summary>
+    /// Do nothing when shotdown
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
