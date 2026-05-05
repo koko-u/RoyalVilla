@@ -6,7 +6,7 @@ namespace RoyalVilla.Api.Dto;
 /// <summary>
 /// Create Villa Post Body Data
 /// </summary>
-public class CreateVillaDto
+public class CreateOrUpdateVillaDto
 {
     /// <summary>
     /// Name of the villa

@@ -44,8 +44,10 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// <param name="cancellationToken">Cancellation token for asynchronous operations</param>
     /// <returns></returns>
     [HttpGet("{id:int:min(1)}", Name = "GetVillaById")]
-    [ProducesResponseType<VillaData>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [
+        ProducesResponseType<VillaData>(StatusCodes.Status200OK),
+        ProducesResponseType(StatusCodes.Status404NotFound)   
+    ]
     public async Task<ActionResult<VillaData>> GetVillaById(int id, CancellationToken cancellationToken)
     {
         var row = await repo.GetVillaByIdAsync(id, cancellationToken);
@@ -62,11 +64,13 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// Create new Villa
     /// </summary>
     [HttpPost]
-    [ProducesResponseType<string>(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [
+        ProducesResponseType<string>(StatusCodes.Status201Created),
+        ProducesResponseType(StatusCodes.Status400BadRequest)
+    ]
     public async Task<ActionResult> CreateVilla(
-        [FromBody] CreateVillaDto dto,
-        [FromServices] IValidator<CreateVillaDto> validator,
+        [FromBody] CreateOrUpdateVillaDto dto,
+        [FromServices] IValidator<CreateOrUpdateVillaDto> validator,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating new villa with DTO: {dto}", dto);
@@ -80,5 +84,47 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
         
         var row = await repo.CreateVilla(dto, cancellationToken);
         return CreatedAtRoute(nameof(GetVillaById), new { id = row.Id }, "Successfully Created.");
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="dto"></param>
+    /// <param name="validator"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPut("{id:int:min(1)}")]
+    [
+        ProducesResponseType(StatusCodes.Status204NoContent), 
+        ProducesResponseType(StatusCodes.Status404NotFound), 
+        ProducesResponseType(StatusCodes.Status400BadRequest),
+        ProducesResponseType(StatusCodes.Status500InternalServerError),
+    ]
+    public async Task<ActionResult> UpdateVilla(
+        int id, 
+        [FromBody] CreateOrUpdateVillaDto dto,
+        [FromServices] IValidator<CreateOrUpdateVillaDto> validator,
+        CancellationToken cancellationToken)
+    {
+        if (await repo.GetVillaByIdAsync(id, cancellationToken) is null)
+        {
+            return NotFound($"Target villa of id = {id} is not found.");
+        }
+        
+        var result = await validator.ValidateAsync(dto, cancellationToken);
+        if (!result.IsValid)
+        {
+            ModelState.AddFluentErrorsToModelState(result.Errors);
+            return ValidationProblem(ModelState);
+        }
+
+        var updatedVilla = await repo.UpdateVilla(id, dto, cancellationToken);
+        if (updatedVilla is null)
+        {
+            return Problem();
+        }
+
+        return NoContent();
     }
 }

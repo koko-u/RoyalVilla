@@ -8,7 +8,7 @@ namespace RoyalVilla.Api.Validators;
 /// Validator for creating a new villa
 /// </summary>
 [AutoRegisterService]
-public sealed class CreateVillaValidator : AbstractValidator<CreateVillaDto>
+public sealed class CreateVillaValidator : AbstractValidator<CreateOrUpdateVillaDto>
 {
     /// <summary>
     /// Default constructor
