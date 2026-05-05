@@ -87,7 +87,7 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     }
 
     /// <summary>
-    /// 
+    /// Update Villa Data
     /// </summary>
     /// <param name="id"></param>
     /// <param name="dto"></param>
@@ -121,6 +121,28 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
 
         var updatedVilla = await repo.UpdateVilla(id, dto, cancellationToken);
         if (updatedVilla is null)
+        {
+            return Problem();
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int:min(1)}")]
+    [
+        ProducesResponseType(StatusCodes.Status204NoContent),
+        ProducesResponseType(StatusCodes.Status404NotFound),
+        ProducesResponseType(StatusCodes.Status500InternalServerError),
+    ]
+    public async Task<ActionResult> DeleteVilla(int id, CancellationToken cancellationToken)
+    {
+        if (await repo.GetVillaByIdAsync(id, cancellationToken) is null)
+        {
+            return NotFound($"Target villa of id = {id} is not found.");
+        }
+
+        var deleteVilla = await repo.DeleteVilla(id, cancellationToken);
+        if (deleteVilla is null)
         {
             return Problem();
         }

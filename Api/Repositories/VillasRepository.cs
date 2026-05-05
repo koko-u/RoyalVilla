@@ -114,4 +114,35 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
             return null;
         }
     }
+
+    /// <summary>
+    /// Delete Villa Data
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<VillaRow?> DeleteVilla(int id, CancellationToken cancellationToken)
+    {
+        var sql = await File.ReadAllTextAsync("Sql/Villas/delete_by_id.sql", cancellationToken);
+        var conn = await dataSource.OpenConnectionAsync(cancellationToken);
+        var tx = await conn.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            var cmd = new CommandDefinition(
+                commandText: sql,
+                parameters: new { Id = id },
+                transaction: tx,
+                cancellationToken: cancellationToken);
+
+            var deleted = await conn.QuerySingleOrDefaultAsync<VillaRow>(cmd);
+            await tx.CommitAsync(cancellationToken);
+            return deleted;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error deleting villa with ID {id}", id);
+            await tx.RollbackAsync(cancellationToken);
+            return null;
+        }
+    }
 }
