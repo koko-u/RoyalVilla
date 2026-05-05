@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Common.Annotations;
 using Common.JsonConverters;
 
 namespace RoyalVilla.Api.Dto;
@@ -13,7 +11,6 @@ public class CreateVillaDto
     /// <summary>
     /// Name of the villa
     /// </summary>
-    [OpenApiRequired]
     public string? Name { get; set; }
     
     /// <summary>
@@ -24,21 +21,18 @@ public class CreateVillaDto
     /// <summary>
     /// Rate of the villa
     /// </summary>
-    [OpenApiRequired]
     [JsonConverter(typeof(NullableDecimalConverter))]
     public decimal? Rate { get; set; }
     
     /// <summary>
     /// Square feet of the villa
     /// </summary>
-    [OpenApiRequired]
     [JsonConverter(typeof(NullableIntegerConverter))]
     public int? SquareFeet { get; set; }
     
     /// <summary>
     /// Occupancy capacity of the villa
     /// </summary>
-    [OpenApiRequired]
     [JsonConverter(typeof(NullableIntegerConverter))]
     public int? Occupancy { get; set; }
     

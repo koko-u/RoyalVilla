@@ -1,4 +1,5 @@
 using FluentValidation;
+using RoyalVilla.Api.Annotations;
 using RoyalVilla.Api.Dto;
 
 namespace RoyalVilla.Api.Validators;
@@ -6,6 +7,7 @@ namespace RoyalVilla.Api.Validators;
 /// <summary>
 /// Validator for creating a new villa
 /// </summary>
+[AutoRegisterService]
 public sealed class CreateVillaValidator : AbstractValidator<CreateVillaDto>
 {
     /// <summary>

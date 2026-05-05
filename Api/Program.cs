@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using Common.OpenApiConfiguration;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
