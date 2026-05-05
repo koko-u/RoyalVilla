@@ -128,6 +128,12 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
         return NoContent();
     }
 
+    /// <summary>
+    /// Delete villa by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpDelete("{id:int:min(1)}")]
     [
         ProducesResponseType(StatusCodes.Status204NoContent),
