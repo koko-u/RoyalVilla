@@ -1,4 +1,7 @@
 using System;
+using System.Globalization;
+using Common.OpenApiConfiguration;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +15,13 @@ using Serilog;
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
+
+// Dapper snake_case to PascalCase property mapping configuration
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
+// FluentValidation culture settings
+ValidatorOptions.Global.LanguageManager.Culture = CultureInfo.InvariantCulture;
+
 
 try
 {
@@ -43,6 +53,8 @@ try
     builder.Services.AddMappingProfiles(typeof(Program));
     // Add Problem Details
     builder.Services.AddProblemDetails();
+    // Add Fluent Validations
+    builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
     
     // Register startup service
     builder.Services.AddHostedService<StartupTask>();

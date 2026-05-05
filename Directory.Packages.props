@@ -26,5 +26,8 @@
         <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
         
         <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4"/>
+        
+        <PackageVersion Include="FluentValidation" Version="12.1.1"/>
+        <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
     </ItemGroup>
 </Project>

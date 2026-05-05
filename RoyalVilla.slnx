@@ -2,4 +2,5 @@
   <Folder Name="/Api/">
     <Project Path="Api/RoyalVilla.Api.csproj" />
   </Folder>
+  <Project Path="Common/Common.csproj" />
 </Solution>

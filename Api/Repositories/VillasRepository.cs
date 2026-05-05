@@ -7,6 +7,7 @@ using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using RoyalVilla.Api.Annotations;
+using RoyalVilla.Api.Dto;
 
 namespace RoyalVilla.Api.Repositories;
 
@@ -49,5 +50,24 @@ public sealed class VillasRepository(NpgsqlConnection conn, ILogger<VillasReposi
         var row = await conn.QuerySingleOrDefaultAsync<VillaRow>(cmd);
 
         return row;
+    }
+
+    /// <summary>
+    /// Create new Villa data
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <param name="cancellationToken"></param>
+    public async Task<VillaRow> CreateVilla(CreateVillaDto dto, CancellationToken cancellationToken = default)
+    {
+        var sql = await File.ReadAllTextAsync("Sql/Villas/insert_one.sql", cancellationToken);
+        await conn.OpenAsync(cancellationToken);
+        var cmd = new CommandDefinition(
+            commandText: sql,
+            parameters: dto,
+            cancellationToken: cancellationToken
+        );
+        var created = await conn.QuerySingleAsync<VillaRow>(cmd);
+        
+        return created;
     }
 }

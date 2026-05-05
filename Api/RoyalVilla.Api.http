@@ -1,6 +1,20 @@
-@RoyalVilla.Api_HostAddress = http://localhost:5139
+@base_url = https://localhost:7179/api
 
-GET {{RoyalVilla.Api_HostAddress}}/weatherforecast/
+### Get all villas
+
+GET {{base_url}}/villas
 Accept: application/json
 
-###
+### Create new villa
+
+POST {{base_url}}/villas
+Content-Type:  application/json
+
+{
+  "name": "Seaside Royal Villa",
+  "details": "Oceanfront villa with a private terrace, bright living area, and direct beach access.",
+  "rate": 9.2,
+  "squareFeet": 2800,
+  "occupancy": 6,
+  "imageUrl": "https://dotnetmasteryimages.blob.core.windows.net/bluevillaimages/villa1.jpg"
+}

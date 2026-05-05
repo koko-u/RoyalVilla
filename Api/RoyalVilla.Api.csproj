@@ -21,6 +21,9 @@
         <PackageReference Include="Serilog.Settings.Configuration"/>
         <PackageReference Include="Serilog.Sinks.Console"/>
         <PackageReference Include="Serilog.Sinks.File"/>
+        <PackageReference Include="FluentValidation"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        
         <PackageReference Include="JetBrains.Annotations">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -28,6 +31,10 @@
 
     <ItemGroup>
         <None Include="Sql/**/*.sql" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 
 </Project>
