@@ -1,12 +1,17 @@
 using System;
 using System.Globalization;
+using Easy_Password_Validator;
+using Easy_Password_Validator.Models;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RoyalVilla.Api.Extensions;
 using RoyalVilla.Api.OpenApiConfiguration;
 using RoyalVilla.Api.Services.Startup;
+using RoyalVilla.Api.Settings;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -44,6 +49,12 @@ try
         opts.AddDocumentTransformer(DocumentTransformers.TagDescriptions);
     });
 
+    // Add JwtOptions Configuration class Instance
+    builder.Services.AddOptions<JwtOptions>()
+        .BindConfiguration("Jwt")
+        .ValidateDataAnnotations()
+        .ValidateOnStart();
+
     // Add PostgreSQL Database Source
     builder.Services.AddPgDatabaseSource(builder.Configuration);
     // Add Repositories
@@ -54,7 +65,20 @@ try
     builder.Services.AddProblemDetails();
     // Add Fluent Validations
     builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
-    
+    // Add Jwt Bearer Authentication
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(opts =>
+        {
+            var jwtOptions =
+                builder.Configuration
+                    .GetSection("Jwt")
+                    .Get<JwtOptions>() ?? throw new InvalidOperationException("Jwt options are missing.");
+            opts.TokenValidationParameters = jwtOptions.GenerateValidationParameters();
+        });
+    builder.Services.AddPolicyBasedAuthorization();
+    // Password complexity
+    builder.Services.AddTransient(_ => new PasswordValidatorService(new PasswordRequirements()));
+
     // Register startup service
     builder.Services.AddHostedService<StartupTask>();
 
@@ -71,7 +95,7 @@ try
                 .WithTheme(ScalarTheme.BluePlanet)
                 .ShowOperationId();
         });
-        
+
         // Unhandled Exception behavior
         app.UseDeveloperExceptionPage();
     }
@@ -86,6 +110,7 @@ try
 
     app.UseSerilogRequestLogging();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

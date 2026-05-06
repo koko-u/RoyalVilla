@@ -23,6 +23,9 @@
         <PackageReference Include="Serilog.Sinks.File"/>
         <PackageReference Include="FluentValidation"/>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Ardalis.SmartEnum"/>
+        <PackageReference Include="Easy.Password.Validator"/>
         
         <PackageReference Include="JetBrains.Annotations">
             <PrivateAssets>all</PrivateAssets>
