@@ -5,10 +5,10 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Npgsql" />
@@ -26,6 +26,10 @@
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="Easy.Password.Validator" />
     <PackageReference Include="MicroElements.AspNetCore.OpenApi.FluentValidation" />
+    <PackageReference Include="Riok.Mapperly">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
 
     <PackageReference Include="JetBrains.Annotations">
       <PrivateAssets>all</PrivateAssets>

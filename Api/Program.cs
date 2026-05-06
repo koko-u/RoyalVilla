@@ -66,8 +66,6 @@ try
     builder.Services.AddPgDatabaseSource(builder.Configuration);
     // Add Repositories
     builder.Services.AddRepositories(typeof(Program));
-    // AutoMapper
-    builder.Services.AddMappingProfiles(typeof(Program));
     // Add Problem Details
     builder.Services.AddProblemDetails();
     // Add Fluent Validations

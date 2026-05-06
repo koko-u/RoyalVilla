@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,16 +17,12 @@ namespace RoyalVilla.Api.Controllers;
 /// Villas controller for managing villa data
 /// </summary>
 /// <param name="repo"></param>
-/// <param name="mapper"></param>
 /// <param name="logger"></param>
 [ApiController]
 [Route("api/villas")]
 [Tags("Villas")]
-public class VillasController(
-    VillasRepository repo,
-    IMapper mapper,
-    ILogger<VillasController> logger
-) : ControllerBase
+public class VillasController(VillasRepository repo, ILogger<VillasController> logger)
+    : ControllerBase
 {
     /// <summary>
     /// Get All Villas Data
@@ -41,7 +37,8 @@ public class VillasController(
     )
     {
         var rows = await repo.GetAllVillasAsync(cancellationToken);
-        var villas = mapper.Map<IEnumerable<VillaData>>(rows);
+
+        var villas = rows.Select(r => r.ToVillaData());
         return Ok(villas);
     }
 
@@ -67,8 +64,7 @@ public class VillasController(
             return NotFound($"Villa with id {id} not found");
         }
 
-        var villa = mapper.Map<VillaData>(row);
-        return Ok(villa);
+        return Ok(row.ToVillaData());
     }
 
     /// <summary>
