@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,7 +33,7 @@ public class JwtOptions
     /// Lifetime of the access token in minutes
     /// </summary>
     public int AccessTokenMinutes { get; set; } = 15;
-
+    
     /// <summary>
     /// Generate symmetric security key for JWT signing and verification
     /// </summary>
@@ -58,22 +61,28 @@ public class JwtOptions
             ClockSkew = TimeSpan.FromMinutes(1),
         };
     }
-    
+
     /// <summary>
-    /// Generate signing credentials for JWT token
+    /// Generate JWT token with provided claims
     /// </summary>
-    /// <example>
-    ///
-    /// var token = new JwtSecurityToken(
-    ///     issuer: options.Issuer,
-    ///     audience: options.Audience,
-    ///     claims: ...,
-    ///     expires: DateTime.UtcNow.AddMinutes(options.AccessTokenMinutes),
-    ///     signingCredentials: options.SigningCredentials()
-    /// );
-    /// 
-    /// </example>
+    /// <param name="claims"></param>
     /// <returns></returns>
-    public SigningCredentials GenerateSigningCredentials() => 
-        new(GenerateSecurityKey(), SecurityAlgorithms.HmacSha256); 
+    public (string JwtSecurityToken, DateTimeOffset ExpiresAt) GenerateJwtToken(IEnumerable<Claim> claims)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var expiresAt = now.AddMinutes(AccessTokenMinutes);
+        var credentials = new SigningCredentials(GenerateSecurityKey(), SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: Issuer,
+            audience: Audience,
+            claims: claims,
+            notBefore: now.UtcDateTime,
+            expires: expiresAt.UtcDateTime,
+            signingCredentials: credentials);
+
+        var securityToken = new JwtSecurityTokenHandler().WriteToken(token);
+        
+        return (securityToken, expiresAt);
+    }
 }

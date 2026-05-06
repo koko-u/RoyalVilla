@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -30,7 +31,7 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
     {
         var insertSql = await File.ReadAllTextAsync("Sql/Users/insert_one.sql", cancellationToken);
         var assignSql = await File.ReadAllTextAsync("Sql/UserRoles/assign_roles.sql", cancellationToken);
-        var sql = await File.ReadAllTextAsync("Sql/Users/select_with_roles.sql", cancellationToken);
+        var sql = await File.ReadAllTextAsync("Sql/Users/select_by_id_with_roles.sql", cancellationToken);
 
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
         await using var tx = await conn.BeginTransactionAsync(cancellationToken);
@@ -72,22 +73,7 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
             );
             var userAndRoleRows = await conn.QueryAsync<UserAndRoleRow>(cmd);
 
-            var users = userAndRoleRows.GroupBy(x => x.ExtractUserRow())
-                .Select(g => new UserData()
-                {
-                    Id = g.Key.Id,
-                    DisplayName = g.Key.DisplayName,
-                    Email = g.Key.Email,
-                    IsActive = g.Key.IsActive,
-                    Roles =
-                        g.Where(x => x.RoleId.HasValue)
-                            .Select(x => new RoleData
-                            {
-                                Id = x.RoleId.GetValueOrDefault(),
-                                Name = x.RoleName ?? string.Empty
-                            })
-                            .ToArray(),
-                }).Single();
+            var users = userAndRoleRows.GroupedByRole().Single();
             
             await tx.CommitAsync(cancellationToken);
 
@@ -99,5 +85,25 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
             await tx.RollbackAsync(cancellationToken);
             throw;
         }
+    }
+
+    /// <summary>
+    /// Get user by id
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<UserData?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var sql = await File.ReadAllTextAsync("Sql/Users/select_by_email_with_roles.sql", cancellationToken);
+        await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
+        var cmd = new CommandDefinition(
+            commandText: sql,
+            parameters: new { Email = email },
+            cancellationToken: cancellationToken
+        );
+        var rows = await conn.QueryAsync<UserAndRoleRow>(cmd);
+
+        return rows.GroupedByRole().SingleOrDefault();
     }
 }

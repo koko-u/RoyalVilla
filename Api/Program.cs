@@ -5,11 +5,14 @@ using Easy_Password_Validator.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RoyalVilla.Api.Dto;
 using RoyalVilla.Api.Extensions;
 using RoyalVilla.Api.OpenApiConfiguration;
+using RoyalVilla.Api.Services.Auth;
 using RoyalVilla.Api.Services.Startup;
 using RoyalVilla.Api.Settings;
 using Scalar.AspNetCore;
@@ -78,6 +81,8 @@ try
     builder.Services.AddPolicyBasedAuthorization();
     // Password complexity
     builder.Services.AddTransient(_ => new PasswordValidatorService(new PasswordRequirements()));
+    // Password Hasher
+    builder.Services.AddTransient<CustomPasswordHasher>();
 
     // Register startup service
     builder.Services.AddHostedService<StartupTask>();
