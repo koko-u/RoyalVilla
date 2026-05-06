@@ -6,23 +6,19 @@ using Microsoft.OpenApi;
 namespace RoyalVilla.Api.OpenApiConfiguration;
 
 /// <summary>
-/// OpenApi Operation Transformations
+/// Exclude Summary and Description XML Document comments from OpenApi operations
 /// </summary>
-public static class OperationTransformers
+public sealed class WithoutSummaryAndDescription : IOpenApiOperationTransformer
 {
-    /// <summary>
-    /// Exclude Summary and Description XML Document comments from OpenApi operations
-    /// </summary>
-    /// <param name="operation"></param>
-    /// <param name="context"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public static Task WithoutSummaryAndDescription(OpenApiOperation operation,
-        OpenApiOperationTransformerContext context, CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public Task TransformAsync(
+        OpenApiOperation operation, 
+        OpenApiOperationTransformerContext context,
+        CancellationToken cancellationToken)
     {
         operation.Summary = null;
         operation.Description = null;
 
         return Task.CompletedTask;
-    } 
+    }
 }

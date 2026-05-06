@@ -5,11 +5,9 @@ using Easy_Password_Validator.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RoyalVilla.Api.Dto;
 using RoyalVilla.Api.Extensions;
 using RoyalVilla.Api.OpenApiConfiguration;
 using RoyalVilla.Api.Services.Auth;
@@ -48,8 +46,10 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi(opts =>
     {
-        opts.AddOperationTransformer(OperationTransformers.WithoutSummaryAndDescription);
-        opts.AddDocumentTransformer(DocumentTransformers.TagDescriptions);
+        opts.AddOperationTransformer<WithoutSummaryAndDescription>();
+        opts.AddOperationTransformer<BearerSecurityOperationTransformer>();
+        opts.AddDocumentTransformer<TagsDescription>();
+        opts.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
     });
 
     // Add JwtOptions Configuration class Instance

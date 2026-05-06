@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -36,6 +37,7 @@ public class AuthController(
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("register")]
+    [AllowAnonymous]
     [
         ProducesResponseType(StatusCodes.Status204NoContent),
         ProducesResponseType(StatusCodes.Status400BadRequest),
@@ -69,6 +71,7 @@ public class AuthController(
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("login")]
+    [AllowAnonymous]
     [
         ProducesResponseType<LoginSuccessDto>(StatusCodes.Status200OK),
         ProducesResponseType(StatusCodes.Status400BadRequest),

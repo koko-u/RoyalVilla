@@ -9,33 +9,6 @@ using Microsoft.OpenApi;
 namespace RoyalVilla.Api.OpenApiConfiguration;
 
 /// <summary>
-/// OpenApi Document Transformers
-/// </summary>
-public static class DocumentTransformers
-{
-    /// <summary>
-    /// Configure OpenApi document tags with descriptions
-    /// </summary>
-    /// <param name="doc"></param>
-    /// <param name="context"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public static Task TagDescriptions(OpenApiDocument doc, OpenApiDocumentTransformerContext context,
-        CancellationToken cancellationToken)
-    {
-        doc.Tags = ApiTags.List
-            .Select(tag => new OpenApiTag
-            {
-                Name = tag.Name,
-                Description = tag.Description()
-            })
-            .ToHashSet();
-
-        return Task.CompletedTask;
-    }
-}
-
-/// <summary>
 /// OpenApi document tags with descriptions
 /// </summary>
 /// <param name="name"></param>
@@ -64,5 +37,28 @@ public sealed class ApiTags(string name, int value) : SmartEnum<ApiTags>(name, v
             .Default(() => description = $"Unknown tag: {this.Name}");
 
         return description;
+    }
+}
+
+/// <summary>
+/// Configure OpenApi document tags with descriptions
+/// </summary>
+public sealed class TagsDescription : IOpenApiDocumentTransformer
+{
+    /// <inheritdoc />
+    public Task TransformAsync(
+        OpenApiDocument document, 
+        OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        document.Tags = ApiTags.List
+            .Select(tag => new OpenApiTag
+            {
+                Name = tag.Name,
+                Description = tag.Description()
+            })
+            .ToHashSet();
+
+        return Task.CompletedTask;
     }
 }

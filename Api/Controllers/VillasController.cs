@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,7 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// <param name="cancellationToken">Cancellation token for asynchronous operations</param>
     /// <returns></returns>
     [HttpGet(Name = "GetVillas")]
+    [AllowAnonymous]
     [ProducesResponseType<IEnumerable<VillaData>>(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<VillaData>>> GetVillas(CancellationToken cancellationToken)
     {
@@ -64,6 +66,7 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// Create new Villa
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = "User,Admin")]
     [
         ProducesResponseType<string>(StatusCodes.Status201Created),
         ProducesResponseType(StatusCodes.Status400BadRequest)
@@ -95,6 +98,7 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPut("{id:int:min(1)}")]
+    [Authorize(Roles = "User,Admin")]
     [
         ProducesResponseType(StatusCodes.Status204NoContent), 
         ProducesResponseType(StatusCodes.Status404NotFound), 
@@ -135,6 +139,7 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpDelete("{id:int:min(1)}")]
+    [Authorize(Roles = "Admin")]
     [
         ProducesResponseType(StatusCodes.Status204NoContent),
         ProducesResponseType(StatusCodes.Status404NotFound),
