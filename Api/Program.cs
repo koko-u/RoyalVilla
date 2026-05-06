@@ -3,6 +3,7 @@ using System.Globalization;
 using Easy_Password_Validator;
 using Easy_Password_Validator.Models;
 using FluentValidation;
+using MicroElements.AspNetCore.OpenApi.FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +50,9 @@ try
         opts.AddOperationTransformer<BearerSecurityOperationTransformer>();
         opts.AddDocumentTransformer<TagsDescription>();
         opts.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
+
+        // for fluent validation rules
+        opts.AddFluentValidationRules();
     });
 
     // Add JwtOptions Configuration class Instance
@@ -68,6 +72,8 @@ try
     builder.Services.AddProblemDetails();
     // Add Fluent Validations
     builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+    // Add Fluent Validation rules to OpenAPI
+    builder.Services.AddFluentValidationRulesToOpenApi();
     // Add Jwt Bearer Authentication
     builder
         .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="Easy.Password.Validator" />
+    <PackageReference Include="MicroElements.AspNetCore.OpenApi.FluentValidation" />
 
     <PackageReference Include="JetBrains.Annotations">
       <PrivateAssets>all</PrivateAssets>
