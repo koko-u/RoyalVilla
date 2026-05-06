@@ -17,12 +17,12 @@ public class JwtOptions
     /// Issuer of the JWT token
     /// </summary>
     public required string Issuer { get; set; }
-    
+
     /// <summary>
     /// Audience for the JWT token
     /// </summary>
     public required string Audience { get; set; }
-    
+
     /// <summary>
     /// Secret key used to sign and verify JWT tokens
     /// </summary>
@@ -33,7 +33,7 @@ public class JwtOptions
     /// Lifetime of the access token in minutes
     /// </summary>
     public int AccessTokenMinutes { get; set; } = 15;
-    
+
     /// <summary>
     /// Generate symmetric security key for JWT signing and verification
     /// </summary>
@@ -50,13 +50,13 @@ public class JwtOptions
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = GenerateSecurityKey(),
-            
+
             ValidateIssuer = true,
             ValidIssuer = this.Issuer,
-            
+
             ValidateAudience = true,
             ValidAudience = this.Audience,
-            
+
             ValidateLifetime = true,
             ClockSkew = TimeSpan.FromMinutes(1),
         };
@@ -67,11 +67,16 @@ public class JwtOptions
     /// </summary>
     /// <param name="claims"></param>
     /// <returns></returns>
-    public (string JwtSecurityToken, DateTimeOffset ExpiresAt) GenerateJwtToken(IEnumerable<Claim> claims)
+    public (string JwtSecurityToken, DateTimeOffset ExpiresAt) GenerateJwtToken(
+        IEnumerable<Claim> claims
+    )
     {
         var now = DateTimeOffset.UtcNow;
         var expiresAt = now.AddMinutes(AccessTokenMinutes);
-        var credentials = new SigningCredentials(GenerateSecurityKey(), SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(
+            GenerateSecurityKey(),
+            SecurityAlgorithms.HmacSha256
+        );
 
         var token = new JwtSecurityToken(
             issuer: Issuer,
@@ -79,10 +84,11 @@ public class JwtOptions
             claims: claims,
             notBefore: now.UtcDateTime,
             expires: expiresAt.UtcDateTime,
-            signingCredentials: credentials);
+            signingCredentials: credentials
+        );
 
         var securityToken = new JwtSecurityTokenHandler().WriteToken(token);
-        
+
         return (securityToken, expiresAt);
     }
 }

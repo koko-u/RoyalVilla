@@ -23,14 +23,13 @@ public static class UserRowExtensions
                 DisplayName = g.Key.DisplayName,
                 Email = g.Key.Email,
                 IsActive = g.Key.IsActive,
-                Roles =
-                    g.Where(x => x.RoleId.HasValue)
-                        .Select(x => new RoleData
-                        {
-                            Id = x.RoleId.GetValueOrDefault(),
-                            Name = x.RoleName ?? string.Empty
-                        })
-                        .ToArray(),
+                Roles = g.Where(x => x.RoleId.HasValue)
+                    .Select(x => new RoleData
+                    {
+                        Id = x.RoleId.GetValueOrDefault(),
+                        Name = x.RoleName ?? string.Empty,
+                    })
+                    .ToArray(),
             });
     }
 }

@@ -9,7 +9,7 @@ public sealed class RoleData
     /// role's id
     /// </summary>
     public required int Id { get; set; }
-    
+
     /// <summary>
     /// role's name
     /// </summary>

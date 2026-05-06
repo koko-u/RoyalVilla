@@ -14,7 +14,10 @@ public static class FluentValidationErrorExtensions
     /// </summary>
     /// <param name="modelState"></param>
     /// <param name="errors"></param>
-    public static void AddFluentErrorsToModelState(this ModelStateDictionary modelState, IEnumerable<ValidationFailure> errors)
+    public static void AddFluentErrorsToModelState(
+        this ModelStateDictionary modelState,
+        IEnumerable<ValidationFailure> errors
+    )
     {
         foreach (var error in errors)
         {

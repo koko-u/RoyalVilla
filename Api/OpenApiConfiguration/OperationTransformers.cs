@@ -12,9 +12,10 @@ public sealed class WithoutSummaryAndDescription : IOpenApiOperationTransformer
 {
     /// <inheritdoc />
     public Task TransformAsync(
-        OpenApiOperation operation, 
+        OpenApiOperation operation,
         OpenApiOperationTransformerContext context,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         operation.Summary = null;
         operation.Description = null;

@@ -10,7 +10,11 @@ namespace Common.JsonConverters;
 /// </summary>
 public class NullableDecimalConverter : JsonConverter<decimal?>
 {
-    public override decimal? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override decimal? Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         if (reader.TokenType == JsonTokenType.Null)
         {
@@ -30,7 +34,14 @@ public class NullableDecimalConverter : JsonConverter<decimal?>
                 return null;
             }
 
-            if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture , out var result))
+            if (
+                decimal.TryParse(
+                    s,
+                    NumberStyles.Number,
+                    CultureInfo.InvariantCulture,
+                    out var result
+                )
+            )
             {
                 return result;
             }

@@ -52,12 +52,12 @@ public sealed class LoginValidator : AbstractValidator<LoginDto>
         await using var conn = await _dataSource.OpenConnectionAsync(cancellationToken);
         var cmd = new CommandDefinition(
             commandText: """
-                         SELECT EXISTS (
-                             SELECT 1
-                             FROM "users"
-                             WHERE "email" = @Email
-                         )
-                         """,
+            SELECT EXISTS (
+                SELECT 1
+                FROM "users"
+                WHERE "email" = @Email
+            )
+            """,
             parameters: new { Email = email },
             cancellationToken: cancellationToken
         );
@@ -67,7 +67,11 @@ public sealed class LoginValidator : AbstractValidator<LoginDto>
         return exists;
     }
 
-    private async Task<bool> IsValidPassword(LoginDto dto, string? password, CancellationToken cancellationToken)
+    private async Task<bool> IsValidPassword(
+        LoginDto dto,
+        string? password,
+        CancellationToken cancellationToken
+    )
     {
         if (password is null)
         {
@@ -78,10 +82,10 @@ public sealed class LoginValidator : AbstractValidator<LoginDto>
         await using var conn = await _dataSource.OpenConnectionAsync(cancellationToken);
         var cmd = new CommandDefinition(
             commandText: """
-                         SELECT "password"
-                         FROM "users"
-                         WHERE "email" = @Email
-                         """,
+            SELECT "password"
+            FROM "users"
+            WHERE "email" = @Email
+            """,
             parameters: new { dto.Email },
             cancellationToken: cancellationToken
         );

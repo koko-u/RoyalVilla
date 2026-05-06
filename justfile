@@ -7,3 +7,5 @@ run:
 watch:
   dotnet watch run --quiet --project ./Api/RoyalVilla.Api.csproj --launch-profile https
 
+fmt:
+  dotnet csharpier format . 

@@ -17,8 +17,14 @@ public static class PolicyBasedAuthorizationExtension
     {
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(AuthPolicy.AdminOnly.ToString(), policy => policy.RequireRole("Admin"));
-            options.AddPolicy(AuthPolicy.User.ToString(), policy => policy.RequireAuthenticatedUser());
+            options.AddPolicy(
+                AuthPolicy.AdminOnly.ToString(),
+                policy => policy.RequireRole("Admin")
+            );
+            options.AddPolicy(
+                AuthPolicy.User.ToString(),
+                policy => policy.RequireAuthenticatedUser()
+            );
         });
 
         return services;

@@ -18,7 +18,8 @@ namespace RoyalVilla.Api.Repositories;
 /// <param name="dataSource"></param>
 /// <param name="logger"></param>
 [AutoRegisterService]
-public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRepository> logger) : IRepository
+public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRepository> logger)
+    : IRepository
 {
     /// <summary>
     /// Create new User and assign whom roles
@@ -27,11 +28,20 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<UserData> CreateUserAsync(CreateUserDto dto, CancellationToken cancellationToken)
+    public async Task<UserData> CreateUserAsync(
+        CreateUserDto dto,
+        CancellationToken cancellationToken
+    )
     {
         var insertSql = await File.ReadAllTextAsync("Sql/Users/insert_one.sql", cancellationToken);
-        var assignSql = await File.ReadAllTextAsync("Sql/UserRoles/assign_roles.sql", cancellationToken);
-        var sql = await File.ReadAllTextAsync("Sql/Users/select_by_id_with_roles.sql", cancellationToken);
+        var assignSql = await File.ReadAllTextAsync(
+            "Sql/UserRoles/assign_roles.sql",
+            cancellationToken
+        );
+        var sql = await File.ReadAllTextAsync(
+            "Sql/Users/select_by_id_with_roles.sql",
+            cancellationToken
+        );
 
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
         await using var tx = await conn.BeginTransactionAsync(cancellationToken);
@@ -52,11 +62,7 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
 
             var assignCmd = new CommandDefinition(
                 commandText: assignSql,
-                parameters: new
-                {
-                    UserId = userRow.Id,
-                    RoleNames = dto.Roles
-                },
+                parameters: new { UserId = userRow.Id, RoleNames = dto.Roles },
                 cancellationToken: cancellationToken,
                 transaction: tx
             );
@@ -64,17 +70,14 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
 
             var cmd = new CommandDefinition(
                 commandText: sql,
-                parameters: new
-                {
-                    userRow.Id
-                },
+                parameters: new { userRow.Id },
                 cancellationToken: cancellationToken,
                 transaction: tx
             );
             var userAndRoleRows = await conn.QueryAsync<UserAndRoleRow>(cmd);
 
             var users = userAndRoleRows.GroupedByRole().Single();
-            
+
             await tx.CommitAsync(cancellationToken);
 
             return users;
@@ -93,9 +96,15 @@ public sealed class UsersRepository(NpgsqlDataSource dataSource, ILogger<UsersRe
     /// <param name="email"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<UserData?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<UserData?> GetUserByEmailAsync(
+        string email,
+        CancellationToken cancellationToken
+    )
     {
-        var sql = await File.ReadAllTextAsync("Sql/Users/select_by_email_with_roles.sql", cancellationToken);
+        var sql = await File.ReadAllTextAsync(
+            "Sql/Users/select_by_email_with_roles.sql",
+            cancellationToken
+        );
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
         var cmd = new CommandDefinition(
             commandText: sql,

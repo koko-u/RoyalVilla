@@ -12,8 +12,7 @@ public class LoginDto
     /// Email address
     /// </summary>
     public string? Email { get; set; }
-    
-    
+
     /// <summary>
     /// Password
     /// </summary>
@@ -29,12 +28,12 @@ public class LoginSuccessDto
     /// JWT Access token
     /// </summary>
     public required string AccessToken { get; set; }
-    
+
     /// <summary>
     /// Expiration date and time of the access token
     /// </summary>
     public required DateTimeOffset ExpiresAt { get; set; }
-    
+
     /// <summary>
     /// Authentication scheme for JWT bearer tokens
     /// </summary>

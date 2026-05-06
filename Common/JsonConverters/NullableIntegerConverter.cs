@@ -10,7 +10,11 @@ namespace Common.JsonConverters;
 /// </summary>
 public class NullableIntegerConverter : JsonConverter<int?>
 {
-    public override int? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override int? Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         if (reader.TokenType == JsonTokenType.Null)
         {
@@ -31,13 +35,13 @@ public class NullableIntegerConverter : JsonConverter<int?>
             }
 
             var intStyle =
-                NumberStyles.Integer |
-                NumberStyles.AllowLeadingSign |
-                NumberStyles.AllowLeadingWhite |
-                NumberStyles.AllowTrailingWhite |
-                NumberStyles.AllowThousands;
-            
-            if (int.TryParse(s, intStyle, CultureInfo.InvariantCulture , out var result))
+                NumberStyles.Integer
+                | NumberStyles.AllowLeadingSign
+                | NumberStyles.AllowLeadingWhite
+                | NumberStyles.AllowTrailingWhite
+                | NumberStyles.AllowThousands;
+
+            if (int.TryParse(s, intStyle, CultureInfo.InvariantCulture, out var result))
             {
                 return result;
             }

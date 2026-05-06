@@ -11,17 +11,17 @@ public class RegisterUserDto
     /// email address
     /// </summary>
     public string? Email { get; set; }
-    
+
     /// <summary>
     /// password
     /// </summary>
     public string? Password { get; set; }
-    
+
     /// <summary>
     /// Password confirmation
     /// </summary>
     public string? PasswordConfirm { get; set; }
-    
+
     /// <summary>
     /// Display name for the user
     /// </summary>
@@ -42,16 +42,16 @@ public class CreateUserDto
     /// email address
     /// </summary>
     public string Email { get; }
-    
+
     /// <summary>
     /// password
     /// </summary>
     public string PasswordHash { get; }
-    
+
     /// <summary>
     /// Display name for the user
     /// </summary>
-    public string? DisplayName { get;  }
+    public string? DisplayName { get; }
 
     /// <summary>
     /// User's role

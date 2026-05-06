@@ -25,9 +25,10 @@ namespace RoyalVilla.Api.Controllers;
 [Route("api/auth")]
 [Tags("Auth")]
 public class AuthController(
-    UsersRepository repo, 
-    CustomPasswordHasher passwordHasher, 
-    IOptions<JwtOptions> options) : ControllerBase
+    UsersRepository repo,
+    CustomPasswordHasher passwordHasher,
+    IOptions<JwtOptions> options
+) : ControllerBase
 {
     /// <summary>
     /// Register a new user
@@ -44,8 +45,9 @@ public class AuthController(
     ]
     public async Task<ActionResult> Register(
         [FromBody] RegisterUserDto dto,
-        [FromServices] IValidator<RegisterUserDto> validator, 
-        CancellationToken cancellationToken)
+        [FromServices] IValidator<RegisterUserDto> validator,
+        CancellationToken cancellationToken
+    )
     {
         var result = await validator.ValidateAsync(dto, cancellationToken);
         if (!result.IsValid)
@@ -55,8 +57,10 @@ public class AuthController(
         }
 
         // create hashed password
-        var passwordHash = passwordHasher.HashPassword(dto.Password ?? throw new ArgumentNullException(nameof(dto.Password)));
-        
+        var passwordHash = passwordHasher.HashPassword(
+            dto.Password ?? throw new ArgumentNullException(nameof(dto.Password))
+        );
+
         var createUserDto = new CreateUserDto(dto, passwordHash);
         var user = await repo.CreateUserAsync(createUserDto, cancellationToken);
 
@@ -79,7 +83,8 @@ public class AuthController(
     public async Task<ActionResult<LoginSuccessDto>> Login(
         [FromBody] LoginDto dto,
         [FromServices] IValidator<LoginDto> validator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var result = await validator.ValidateAsync(dto, cancellationToken);
         if (!result.IsValid)
@@ -94,24 +99,20 @@ public class AuthController(
         {
             return Problem();
         }
-        
+
         var claims = new List<Claim>
         {
-            new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new (JwtRegisteredClaimNames.Email, user.Email),
-            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
         claims.AddRange(user.Roles.Select(r => new Claim(ClaimTypes.Role, r.Name)));
 
         var (token, expiresAt) = options.Value.GenerateJwtToken(claims);
-        
+
         Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
         Response.Headers.Pragma = "no-cache";
-        
-        return Ok(new LoginSuccessDto
-        {
-            AccessToken = token,
-            ExpiresAt = expiresAt,
-        });
+
+        return Ok(new LoginSuccessDto { AccessToken = token, ExpiresAt = expiresAt });
     }
 }

@@ -22,7 +22,11 @@ namespace RoyalVilla.Api.Controllers;
 [ApiController]
 [Route("api/villas")]
 [Tags("Villas")]
-public class VillasController(VillasRepository repo, IMapper mapper, ILogger<VillasController> logger) : ControllerBase
+public class VillasController(
+    VillasRepository repo,
+    IMapper mapper,
+    ILogger<VillasController> logger
+) : ControllerBase
 {
     /// <summary>
     /// Get All Villas Data
@@ -32,7 +36,9 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     [HttpGet(Name = "GetVillas")]
     [AllowAnonymous]
     [ProducesResponseType<IEnumerable<VillaData>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<VillaData>>> GetVillas(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<VillaData>>> GetVillas(
+        CancellationToken cancellationToken
+    )
     {
         var rows = await repo.GetAllVillasAsync(cancellationToken);
         var villas = mapper.Map<IEnumerable<VillaData>>(rows);
@@ -48,9 +54,12 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     [HttpGet("{id:int:min(1)}", Name = "GetVillaById")]
     [
         ProducesResponseType<VillaData>(StatusCodes.Status200OK),
-        ProducesResponseType(StatusCodes.Status404NotFound)   
+        ProducesResponseType(StatusCodes.Status404NotFound)
     ]
-    public async Task<ActionResult<VillaData>> GetVillaById(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult<VillaData>> GetVillaById(
+        int id,
+        CancellationToken cancellationToken
+    )
     {
         var row = await repo.GetVillaByIdAsync(id, cancellationToken);
         if (row is null)
@@ -74,17 +83,18 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     public async Task<ActionResult> CreateVilla(
         [FromBody] CreateOrUpdateVillaDto dto,
         [FromServices] IValidator<CreateOrUpdateVillaDto> validator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         logger.LogInformation("Creating new villa with DTO: {dto}", dto);
-        
+
         var result = await validator.ValidateAsync(dto, cancellationToken);
         if (!result.IsValid)
         {
             ModelState.AddFluentErrorsToModelState(result.Errors);
             return ValidationProblem(ModelState);
         }
-        
+
         var row = await repo.CreateVilla(dto, cancellationToken);
         return CreatedAtRoute(nameof(GetVillaById), new { id = row.Id }, "Successfully Created.");
     }
@@ -100,22 +110,23 @@ public class VillasController(VillasRepository repo, IMapper mapper, ILogger<Vil
     [HttpPut("{id:int:min(1)}")]
     [Authorize(Roles = "User,Admin")]
     [
-        ProducesResponseType(StatusCodes.Status204NoContent), 
-        ProducesResponseType(StatusCodes.Status404NotFound), 
+        ProducesResponseType(StatusCodes.Status204NoContent),
+        ProducesResponseType(StatusCodes.Status404NotFound),
         ProducesResponseType(StatusCodes.Status400BadRequest),
         ProducesResponseType(StatusCodes.Status500InternalServerError),
     ]
     public async Task<ActionResult> UpdateVilla(
-        int id, 
+        int id,
         [FromBody] CreateOrUpdateVillaDto dto,
         [FromServices] IValidator<CreateOrUpdateVillaDto> validator,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         if (await repo.GetVillaByIdAsync(id, cancellationToken) is null)
         {
             return NotFound($"Target villa of id = {id} is not found.");
         }
-        
+
         var result = await validator.ValidateAsync(dto, cancellationToken);
         if (!result.IsValid)
         {

@@ -17,9 +17,7 @@ using Scalar.AspNetCore;
 using Serilog;
 
 // Bootstrap Logger
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
+Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
 
 // Dapper snake_case to PascalCase property mapping configuration
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -27,19 +25,20 @@ Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 // FluentValidation culture settings
 ValidatorOptions.Global.LanguageManager.Culture = CultureInfo.InvariantCulture;
 
-
 try
 {
     var builder = WebApplication.CreateBuilder(args);
 
     // Configure Logger to Serilog
-    builder.Host.UseSerilog((context, services, configuration) =>
-    {
-        configuration
-            .ReadFrom.Configuration(context.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext();
-    });
+    builder.Host.UseSerilog(
+        (context, services, configuration) =>
+        {
+            configuration
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext();
+        }
+    );
 
     // Add Controllers and OpenAPI configuration
     builder.Services.AddControllers();
@@ -53,7 +52,8 @@ try
     });
 
     // Add JwtOptions Configuration class Instance
-    builder.Services.AddOptions<JwtOptions>()
+    builder
+        .Services.AddOptions<JwtOptions>()
         .BindConfiguration("Jwt")
         .ValidateDataAnnotations()
         .ValidateOnStart();
@@ -69,13 +69,13 @@ try
     // Add Fluent Validations
     builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
     // Add Jwt Bearer Authentication
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    builder
+        .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(opts =>
         {
             var jwtOptions =
-                builder.Configuration
-                    .GetSection("Jwt")
-                    .Get<JwtOptions>() ?? throw new InvalidOperationException("Jwt options are missing.");
+                builder.Configuration.GetSection("Jwt").Get<JwtOptions>()
+                ?? throw new InvalidOperationException("Jwt options are missing.");
             opts.TokenValidationParameters = jwtOptions.GenerateValidationParameters();
         });
     builder.Services.AddPolicyBasedAuthorization();
@@ -95,10 +95,7 @@ try
         app.MapOpenApi();
         app.MapScalarApiReference(opts =>
         {
-            opts
-                .EnableDarkMode()
-                .WithTheme(ScalarTheme.BluePlanet)
-                .ShowOperationId();
+            opts.EnableDarkMode().WithTheme(ScalarTheme.BluePlanet).ShowOperationId();
         });
 
         // Unhandled Exception behavior

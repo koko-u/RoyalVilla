@@ -12,14 +12,16 @@ namespace RoyalVilla.Api.OpenApiConfiguration;
 /// <summary>
 /// Add Bearer security scheme to OpenAPI document
 /// </summary>
-public sealed class BearerSecurityDocumentTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider)
-    : IOpenApiDocumentTransformer
+public sealed class BearerSecurityDocumentTransformer(
+    IAuthenticationSchemeProvider authenticationSchemeProvider
+) : IOpenApiDocumentTransformer
 {
     /// <inheritdoc />
     public async Task TransformAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var schemas = await authenticationSchemeProvider.GetAllSchemesAsync();
         if (schemas.All(s => s.Name != JwtBearerDefaults.AuthenticationScheme))
@@ -38,7 +40,7 @@ public sealed class BearerSecurityDocumentTransformer(IAuthenticationSchemeProvi
                 BearerFormat = "JWT",
                 Description = "Bearer token authentication",
                 Name = "Authorization",
-                In = ParameterLocation.Header
+                In = ParameterLocation.Header,
             };
     }
 }

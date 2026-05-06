@@ -17,13 +17,16 @@ namespace RoyalVilla.Api.Repositories;
 /// <param name="dataSource"></param>
 /// <param name="logger"></param>
 [AutoRegisterService]
-public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<VillasRepository> logger) : IRepository
+public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<VillasRepository> logger)
+    : IRepository
 {
     /// <summary>
     /// Get all villas Information
     /// </summary>
     /// <returns>Villa information</returns>
-    public async Task<IEnumerable<VillaRow>> GetAllVillasAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<VillaRow>> GetAllVillasAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         var sql = await File.ReadAllTextAsync("Sql/Villas/select_all.sql", cancellationToken);
 
@@ -39,7 +42,10 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<VillaRow?> GetVillaByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<VillaRow?> GetVillaByIdAsync(
+        int id,
+        CancellationToken cancellationToken = default
+    )
     {
         var sql = await File.ReadAllTextAsync("Sql/Villas/select_one.sql", cancellationToken);
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
@@ -58,7 +64,10 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
     /// </summary>
     /// <param name="dto"></param>
     /// <param name="cancellationToken"></param>
-    public async Task<VillaRow> CreateVilla(CreateOrUpdateVillaDto dto, CancellationToken cancellationToken = default)
+    public async Task<VillaRow> CreateVilla(
+        CreateOrUpdateVillaDto dto,
+        CancellationToken cancellationToken = default
+    )
     {
         var sql = await File.ReadAllTextAsync("Sql/Villas/insert_one.sql", cancellationToken);
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
@@ -82,8 +91,11 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
     /// <param name="dto"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<VillaRow?> UpdateVilla(int id, CreateOrUpdateVillaDto dto,
-        CancellationToken cancellationToken = default)
+    public async Task<VillaRow?> UpdateVilla(
+        int id,
+        CreateOrUpdateVillaDto dto,
+        CancellationToken cancellationToken = default
+    )
     {
         var sql = await File.ReadAllTextAsync("Sql/Villas/update_by_id.sql", cancellationToken);
         await using var conn = await dataSource.OpenConnectionAsync(cancellationToken);
@@ -100,7 +112,7 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
                     dto.Rate,
                     dto.SquareFeet,
                     dto.Occupancy,
-                    dto.ImageUrl
+                    dto.ImageUrl,
                 },
                 transaction: tx,
                 cancellationToken: cancellationToken
@@ -135,7 +147,8 @@ public sealed class VillasRepository(NpgsqlDataSource dataSource, ILogger<Villas
                 commandText: sql,
                 parameters: new { Id = id },
                 transaction: tx,
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken
+            );
 
             var deleted = await conn.QuerySingleOrDefaultAsync<VillaRow>(cmd);
             await tx.CommitAsync(cancellationToken);

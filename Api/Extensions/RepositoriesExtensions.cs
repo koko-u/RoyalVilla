@@ -18,8 +18,11 @@ public static class RepositoriesExtensions
     /// <returns></returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services, Type type)
     {
-        var repoTypes =
-            type.Assembly.GetTypes().Where(t => t is { IsClass: true, IsSealed: true } && t.IsAssignableTo(typeof(IRepository)));
+        var repoTypes = type
+            .Assembly.GetTypes()
+            .Where(t =>
+                t is { IsClass: true, IsSealed: true } && t.IsAssignableTo(typeof(IRepository))
+            );
         foreach (var repo in repoTypes)
         {
             services.AddScoped(repo);

@@ -15,9 +15,11 @@ public static class PgDatabaseSourceExtensions
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IServiceCollection AddPgDatabaseSource(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPgDatabaseSource(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
-
         var builder = new NpgsqlConnectionStringBuilder()
         {
             Host = configuration.GetValue<string>("DATABASE_HOST"),
@@ -25,10 +27,10 @@ public static class PgDatabaseSourceExtensions
             Database = configuration.GetValue<string>("DATABASE_NAME"),
             Username = configuration.GetValue<string>("DATABASE_USER"),
             Password = configuration.GetValue<string>("DATABASE_PASSWORD"),
-            SslMode = configuration.GetValue<SslMode>("DATABASE_SSLMODE")
+            SslMode = configuration.GetValue<SslMode>("DATABASE_SSLMODE"),
         };
         services.AddNpgsqlDataSource(builder.ConnectionString);
-        
+
         return services;
     }
 }

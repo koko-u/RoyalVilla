@@ -16,7 +16,7 @@ public sealed class CreateVillaValidator : AbstractValidator<CreateOrUpdateVilla
     public CreateVillaValidator()
     {
         RuleFor(villa => villa.Name).NotEmpty().MaximumLength(255);
-        RuleFor(villa => villa.Details).MaximumLength(4000);    
+        RuleFor(villa => villa.Details).MaximumLength(4000);
         RuleFor(villa => villa.Rate).NotNull().InclusiveBetween(from: 0.0m, to: 10.0m);
         RuleFor(villa => villa.SquareFeet).NotNull().GreaterThan(0);
         RuleFor(villa => villa.Occupancy).NotNull().GreaterThan(0);

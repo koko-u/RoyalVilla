@@ -32,8 +32,10 @@ public sealed class ApiTags(string name, int value) : SmartEnum<ApiTags>(name, v
     public string Description()
     {
         var description = string.Empty;
-        this.When(ApiTags.Auth).Then(() => description = "Authentication and Authorization Operations")
-            .When(ApiTags.Villas).Then(() => description = "Villa management operations")
+        this.When(ApiTags.Auth)
+            .Then(() => description = "Authentication and Authorization Operations")
+            .When(ApiTags.Villas)
+            .Then(() => description = "Villa management operations")
             .Default(() => description = $"Unknown tag: {this.Name}");
 
         return description;
@@ -47,16 +49,13 @@ public sealed class TagsDescription : IOpenApiDocumentTransformer
 {
     /// <inheritdoc />
     public Task TransformAsync(
-        OpenApiDocument document, 
+        OpenApiDocument document,
         OpenApiDocumentTransformerContext context,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        document.Tags = ApiTags.List
-            .Select(tag => new OpenApiTag
-            {
-                Name = tag.Name,
-                Description = tag.Description()
-            })
+        document.Tags = ApiTags
+            .List.Select(tag => new OpenApiTag { Name = tag.Name, Description = tag.Description() })
             .ToHashSet();
 
         return Task.CompletedTask;

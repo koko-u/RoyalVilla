@@ -16,9 +16,10 @@ public sealed class BearerSecurityOperationTransformer : IOpenApiOperationTransf
 {
     /// <inheritdoc />
     public Task TransformAsync(
-        OpenApiOperation operation, 
+        OpenApiOperation operation,
         OpenApiOperationTransformerContext context,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var metadata = context.Description.ActionDescriptor.EndpointMetadata;
 
@@ -34,14 +35,14 @@ public sealed class BearerSecurityOperationTransformer : IOpenApiOperationTransf
             return Task.CompletedTask;
         }
 
-        var bearerSecurityKey = new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, context.Document);
+        var bearerSecurityKey = new OpenApiSecuritySchemeReference(
+            JwtBearerDefaults.AuthenticationScheme,
+            context.Document
+        );
 
         operation.Security ??= new List<OpenApiSecurityRequirement>();
-        operation.Security.Add(new OpenApiSecurityRequirement
-        {
-            [bearerSecurityKey] = []
-        });
-        
+        operation.Security.Add(new OpenApiSecurityRequirement { [bearerSecurityKey] = [] });
+
         return Task.CompletedTask;
     }
 }
