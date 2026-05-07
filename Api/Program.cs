@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RoyalVilla.Api.Extensions;
+using RoyalVilla.Api.Features.Shared;
+using RoyalVilla.Api.Features.Startup;
 using RoyalVilla.Api.OpenApiConfiguration;
-using RoyalVilla.Api.Services.Auth;
-using RoyalVilla.Api.Services.Startup;
+using RoyalVilla.Api.ServiceCollectionExtensions;
 using RoyalVilla.Api.Settings;
 using Scalar.AspNetCore;
 using Serilog;
@@ -46,9 +46,9 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi(opts =>
     {
-        opts.AddOperationTransformer<WithoutSummaryAndDescription>();
+        opts.AddOperationTransformer<WithoutSummaryAndDescriptionOperationTransformer>();
         opts.AddOperationTransformer<BearerSecurityOperationTransformer>();
-        opts.AddDocumentTransformer<TagsDescription>();
+        opts.AddDocumentTransformer<TagsDescriptionDocumentTransformer>();
         opts.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
 
         // for fluent validation rules
@@ -65,7 +65,9 @@ try
     // Add PostgreSQL Database Source
     builder.Services.AddPgDatabaseSource(builder.Configuration);
     // Add Repositories
-    builder.Services.AddRepositories(typeof(Program));
+    builder.Services.AddRepositories<Program>();
+    // Add Services
+    builder.Services.AddServices<Program>();
     // Add Problem Details
     builder.Services.AddProblemDetails();
     // Add Fluent Validations
