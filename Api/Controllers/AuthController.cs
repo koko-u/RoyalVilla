@@ -41,7 +41,7 @@ public class AuthController(
     [AllowAnonymous]
     [
         ProducesResponseType(StatusCodes.Status204NoContent),
-        ProducesResponseType(StatusCodes.Status400BadRequest),
+        ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest),
     ]
     public async Task<ActionResult> Register(
         [FromBody] RegisterUserDto dto,
@@ -78,7 +78,8 @@ public class AuthController(
     [AllowAnonymous]
     [
         ProducesResponseType<LoginSuccessDto>(StatusCodes.Status200OK),
-        ProducesResponseType(StatusCodes.Status400BadRequest),
+        ProducesResponseType<UnauthorizedObjectResult>(StatusCodes.Status401Unauthorized),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError),
     ]
     public async Task<ActionResult<LoginSuccessDto>> Login(
         [FromBody] LoginDto dto,
@@ -97,7 +98,11 @@ public class AuthController(
         var user = await repo.GetUserByEmailAsync(email, cancellationToken);
         if (user is null)
         {
-            return Problem();
+            return Problem(
+                title: "Failed to fetch user by email",
+                detail: "The provided email does not exist in the system.",
+                statusCode: StatusCodes.Status500InternalServerError
+            );
         }
 
         var claims = new List<Claim>
