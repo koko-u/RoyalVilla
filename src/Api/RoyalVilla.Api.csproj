@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Application\RoyalVilla.Application.csproj" />
     <ProjectReference Include="..\Infrastructure\RoyalVilla.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
 </Project>
