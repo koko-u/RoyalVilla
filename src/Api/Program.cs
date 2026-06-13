@@ -4,11 +4,16 @@ using MicroElements.AspNetCore.OpenApi.FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RoyalVilla.Application;
+using RoyalVilla.Infrastructure;
 using Scalar.AspNetCore;
 using Serilog;
 
 // Bootstrap Logger
 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateBootstrapLogger();
+
+// Infrastructure setup
+Infrastructure.Setup();
 
 try
 {
@@ -34,6 +39,8 @@ try
     builder.Services.AddControllers();
     builder.Services.AddProblemDetails();
     builder.Services.AddFluentValidationRulesToOpenApi();
+    builder.Services.AddApplicationServices();
+    builder.Services.AddInfrastructure(builder.Configuration);
 
     // Configure OpenAPI
     builder.Services.AddOpenApi(opts =>

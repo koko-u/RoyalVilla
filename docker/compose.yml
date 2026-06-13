@@ -11,7 +11,7 @@ services:
     restart: always
     volumes:
       - type: volume
-        source: nz_walks_db_data
+        source: royal_villa_db_data
         target: /var/lib/postgresql
         volume:
           nocopy: true
@@ -35,7 +35,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - nz_walks_pgadmin_data:/var/lib/pgadmin
+      - royal_villa_pgadmin_data:/var/lib/pgadmin
       - ./config/servers.json.template:/pgadmin4/servers.json.template
       - ./pgadmin_entrypoint.sh:/pgadmin_entrypoint.sh
     entrypoint: [ "/bin/bash", "/pgadmin_entrypoint.sh" ]
@@ -56,5 +56,5 @@ services:
     ports:
       - "${DATABASE_TEST_PORT}:5432"
 volumes:
-  nz_walks_db_data:
-  nz_walks_pgadmin_data:
+  royal_villa_db_data:
+  royal_villa_pgadmin_data:

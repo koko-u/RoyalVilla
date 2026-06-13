@@ -6,6 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Domain\RoyalVilla.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Villas\Commands\" />
   </ItemGroup>
 </Project>

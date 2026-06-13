@@ -1,0 +1,8 @@
+-- migrate:up
+ALTER TABLE IF EXISTS "villas"
+ALTER COLUMN "rate" SET DATA TYPE DECIMAL(10,2);
+
+-- migrate:down
+ALTER TABLE IF EXISTS "villas"
+    ALTER COLUMN "rate" SET DATA TYPE DECIMAL(3,2);
+
